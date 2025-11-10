@@ -1,23 +1,46 @@
-from spotify_intelligence.silver_layer.RawSource import RawSource, RawTable
+from spotify_intelligence.silver_layer.RawSource import RawSource
+from spotify_intelligence.silver_layer.SpotifyTables import SpotifyTables
+import os
 
 
 class Spotify(RawSource):
     source_name = "spotify"
     source_path = "/mnt/c/data_projects/lake"
-    RawTable = {
-        "artist": RawTable(
-            relative_path="artist/raw/album.DELTA",
-            format="delta",
+    RawTables = {
+        "artist": SpotifyTables(
+            read_path=os.path.join(
+                source_path, source_name, "artist", "raw", "artist.DELTA"
+            ),
+            write_path=os.path.join(
+                source_path, source_name, "artist", "data", "artist.DELTA"
+            ),
+            source_name="spotify",
+            table_name="artist",
+            table_format="DELTA",
             partitioning=[],
         ),
-        "album": RawTable(
-            relative_path="album/raw/album.DELTA",
-            format="delta",
+        "album": SpotifyTables(
+            read_path=os.path.join(
+                source_path, source_name, "album", "raw", "album.DELTA"
+            ),
+            write_path=os.path.join(
+                source_path, source_name, "album", "data", "album.DELTA"
+            ),
+            source_name="spotify",
+            table_name="album",
+            table_format="DELTA",
             partitioning=[],
         ),
-        "track": RawTable(
-            relative_path="track/raw/track.DELTA",
-            format="delta",
+        "track": SpotifyTables(
+            read_path=os.path.join(
+                source_path, source_name, "track", "raw", "track.DELTA"
+            ),
+            write_path=os.path.join(
+                source_path, source_name, "track", "data", "track.DELTA"
+            ),
+            source_name="spotify",
+            table_name="track",
+            table_format="DELTA",
             partitioning=[],
         ),
     }

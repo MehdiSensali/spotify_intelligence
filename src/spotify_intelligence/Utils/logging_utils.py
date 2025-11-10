@@ -27,14 +27,28 @@ class CustomFormatter(logging.Formatter):
         return formatter.format(record)
 
 
-def setup_logger(name: str, level: int = logging.INFO) -> logging.Logger:
-    logger = logging.getLogger(name)
-    logger.setLevel(level)
-    ch = logging.StreamHandler()
-    ch.setLevel(level)
-    formatter = CustomFormatter()
-    ch.setFormatter(formatter)
-    for handler in logger.handlers[:]:
-        logger.removeHandler(handler)
-    logger.addHandler(ch)
-    return logger
+class Singleton(type):
+    _instances = {}
+
+    def __call__(cls, *args, **kwargs):
+        if cls not in cls._instances:
+            cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
+        return cls._instances[cls]
+
+
+class DataLogger(metaclass=Singleton):
+    logger: logging.Logger = None
+
+    def setup_logger(self, name: str, level: int = logging.INFO) -> logging.Logger:
+        if not self.logger:
+            logger = logging.getLogger(name)
+            logger.setLevel(level)
+            ch = logging.StreamHandler()
+            ch.setLevel(level)
+            formatter = CustomFormatter()
+            ch.setFormatter(formatter)
+            for handler in logger.handlers[:]:
+                logger.removeHandler(handler)
+            logger.addHandler(ch)
+            self.logger = logger
+        return self.logger

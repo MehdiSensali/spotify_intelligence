@@ -13,7 +13,9 @@ class RawData(abc.ABC):
 
     def __init__(self):
         self.raw_path = os.path.join(self.base_raw_path, self.source)
-        self.logger: Logger = Utils.setup_logger(name=self.source, level=logging.DEBUG)
+        self.logger: Logger = Utils.DataLogger().setup_logger(
+            name=self.source, level=logging.DEBUG
+        )
 
     def setup(self):
         pass
@@ -21,11 +23,11 @@ class RawData(abc.ABC):
     def collect_data(self, table: str):
         raise NotImplementedError
 
-    def save_data(self, df: pl.DataFrame, table: str):
-        raise NotImplementedError
-
     def prepare_data(self, df: pl.DataFrame, table: str) -> pl.DataFrame:
         return df
+
+    def save_data(self, df: pl.DataFrame, table: str):
+        raise NotImplementedError
 
     def run(self):
         self.setup()

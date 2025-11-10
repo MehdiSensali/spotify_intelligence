@@ -22,4 +22,12 @@ if __name__ == "__main__":
         instance: RawData = cl()
         instance.run()
     elif issubclass(cl, PrepareData):
-        pass
+        tables_to_process = runner.get("tables", [])
+        for table_full_name in tables_to_process:
+            source_name, table_name = table_full_name.rsplit(".", 1)
+            args_ = {
+                "source_name": source_name,
+                "table_name": table_name,
+            }
+            instance: PrepareData = cl(**args_)
+            instance.run()
