@@ -1,7 +1,6 @@
 from spotify_intelligence.bronze_layer.RawData import RawData
 from spotify_intelligence.silver_layer.PrepareData import PrepareData
 import argparse
-import os
 import json
 import importlib
 

@@ -79,7 +79,7 @@ class Spotify(RawData):
         return df
 
     def save_data(self, df: pl.DataFrame, table: str):
-        table_path = os.path.join(self.raw_path, table)
+        table_path = os.path.join(self.raw_path, table, "raw")
         os.makedirs(table_path, exist_ok=True)
-        file_path = os.path.join(table_path, f"{table}_data.delta")
+        file_path = os.path.join(table_path, f"{table}.DELTA")
         df.write_delta(file_path, mode="overwrite")

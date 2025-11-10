@@ -6,8 +6,7 @@ from logging import Logger
 import spotify_intelligence.Utils as Utils
 
 
-@abc.abstractmethod
-class RawData:
+class RawData(abc.ABC):
     base_raw_path = None
     source = None
     tables: list[str] = []
