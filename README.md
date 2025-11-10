@@ -44,9 +44,9 @@ python -m venv .venv
 source .venv/bin/activate  # Linux/WSL
 ```
 
-3. **Install dependencies**
+3. **Install your project locally (this will also install the requirements)**
 ```bash
-pip install -r requirements.txt
+pip install -e .
 ```
 
 4. **Configure Spotify API credentials**

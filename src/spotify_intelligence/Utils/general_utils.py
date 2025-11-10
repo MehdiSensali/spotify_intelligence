@@ -1,5 +1,4 @@
 import requests
-import polars as pl
 
 
 class MissingCredentialsError(Exception):
