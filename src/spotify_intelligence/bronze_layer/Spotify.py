@@ -1,11 +1,11 @@
-from spotify_intelligence.bronze_layer.RawData import RawDataCollector
+from spotify_intelligence.bronze_layer.RawData import RawData
 import spotify_intelligence.Utils as Utils
 from spotipy import Spotify as SpotipyClient, SpotifyException
 import os
 import polars as pl
 
 
-class Spotify(RawDataCollector):
+class Spotify(RawData):
     base_raw_path = "/mnt/c/data_projects/lake"
     source = "spotify"
     tables = ["artist", "album", "track"]

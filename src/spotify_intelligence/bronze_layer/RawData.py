@@ -7,7 +7,7 @@ import spotify_intelligence.Utils as Utils
 
 
 @abc.abstractmethod
-class RawDataCollector:
+class RawData:
     base_raw_path = None
     source = None
     tables: list[str] = []
