@@ -10,10 +10,16 @@ class Spotify(RawDataCollector):
     source = "spotify"
     tables = ["artist", "album", "track"]
 
-    def __init__(self, query: str = "2023-2026", limit: int = 50):
+    def __init__(
+        self,
+        query: str = "2023-2026",
+        request_limit: int = 50,
+        result_limit: int = 1000,
+    ):
         super().__init__()
         self.query = query
-        self.limit = limit
+        self.request_limit = request_limit
+        self.result_limit = result_limit
 
     def setup(self):
         TOKEN: str = Utils.get_bearer_token(
@@ -23,15 +29,12 @@ class Spotify(RawDataCollector):
         self.spotify_client: SpotipyClient = SpotipyClient(auth=TOKEN)
 
     def collect_data(self, table: str):
-        offset_list = [
-            self.limit * i - 1 if i > 0 else 0 for i in range(1000 // self.limit)
-        ]
 
         results = []
-        for offset in offset_list:
+        for offset in range(0, self.result_limit, self.request_limit):
             try:
                 result = self.spotify_client.search(
-                    q=self.query, type=table, limit=self.limit, offset=offset
+                    q=self.query, type=table, limit=self.request_limit, offset=offset
                 )
                 results.extend(result[f"{table}s"]["items"])
             except SpotifyException as e:
@@ -41,9 +44,12 @@ class Spotify(RawDataCollector):
                         client_id=os.getenv("SPOTIFY_CLIENT_ID"),
                         client_secret=os.getenv("SPOTIFY_CLIENT_SECRET"),
                     )
-                    spotify_client: Spotify = Spotify(auth=TOKEN)
+                    spotify_client: SpotipyClient = SpotipyClient(auth=TOKEN)
                     result = spotify_client.search(
-                        q=self.query, type=table, limit=self.limit, offset=offset
+                        q=self.query,
+                        type=table,
+                        limit=self.request_limit,
+                        offset=offset,
                     )
                 except Exception as e:
                     self.logger.error(f"Error fetching artists at offset {offset}: {e}")
