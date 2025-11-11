@@ -1,6 +1,6 @@
 import abc
 import polars as pl
-from spotify_intelligence.silver_layer.SilverRawTable import SilverRawTable
+from spotify_intelligence.silver_layer.generics.SilverRawTable import SilverRawTable
 
 
 class RawSource(abc.ABC):

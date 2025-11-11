@@ -1,4 +1,4 @@
 {
-    "module": "spotify_intelligence.bronze_layer.Spotify.Spotify",
+    "module": "spotify_intelligence.bronze_layer.business.Spotify.Spotify",
     "tables": []
 }

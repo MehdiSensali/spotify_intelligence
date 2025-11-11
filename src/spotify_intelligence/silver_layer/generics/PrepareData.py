@@ -1,5 +1,8 @@
-from spotify_intelligence.silver_layer.RawFactory import RawFactory
-from spotify_intelligence.silver_layer.RawSource import RawSource, SilverRawTable
+from spotify_intelligence.silver_layer.generics.RawFactory import RawFactory
+from spotify_intelligence.silver_layer.generics.RawSource import (
+    RawSource,
+    SilverRawTable,
+)
 
 import spotify_intelligence.Utils as Utils
 

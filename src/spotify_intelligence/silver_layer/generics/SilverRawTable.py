@@ -19,7 +19,9 @@ class SilverRawTable(abc.ABC):
         self.table_name = table_name
         self.table_format = table_format
         self.partitioning = partitioning
-        self.logger = Utils.DataLogger().setup_logger(name="PrepareData")
+        self.logger = Utils.DataLogger().setup_logger(
+            name=f"{source_name}.{table_name}"
+        )
 
     def read_raw(self) -> pl.DataFrame:
         raise NotImplementedError("Subclasses must implement read_raw method.")

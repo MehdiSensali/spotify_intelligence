@@ -1,4 +1,4 @@
-from spotify_intelligence.bronze_layer.RawData import RawData
+from spotify_intelligence.bronze_layer.generics.RawData import RawData
 import spotify_intelligence.Utils as Utils
 from spotipy import Spotify as SpotipyClient, SpotifyException
 import os
@@ -82,4 +82,4 @@ class Spotify(RawData):
         table_path = os.path.join(self.raw_path, table, "raw")
         os.makedirs(table_path, exist_ok=True)
         file_path = os.path.join(table_path, f"{table}.DELTA")
-        df.write_delta(file_path, mode="overwrite")
+        df.write_delta(file_path, mode="append")

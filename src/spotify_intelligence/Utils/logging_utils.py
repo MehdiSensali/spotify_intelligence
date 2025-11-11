@@ -1,4 +1,5 @@
 import logging
+from typing import Optional
 
 
 class CustomFormatter(logging.Formatter):
@@ -36,8 +37,8 @@ class Singleton(type):
         return cls._instances[cls]
 
 
-class DataLogger(metaclass=Singleton):
-    logger: logging.Logger = None
+class DataLogger:
+    logger: Optional[logging.Logger] = None
 
     def setup_logger(self, name: str, level: int = logging.INFO) -> logging.Logger:
         if not self.logger:

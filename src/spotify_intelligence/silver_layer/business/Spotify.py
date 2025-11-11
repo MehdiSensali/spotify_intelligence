@@ -1,5 +1,5 @@
-from spotify_intelligence.silver_layer.RawSource import RawSource
-from spotify_intelligence.silver_layer.SpotifyTables import SpotifyTables
+from spotify_intelligence.silver_layer.generics.RawSource import RawSource
+from spotify_intelligence.silver_layer.business.SpotifyTables import SpotifyTables
 import os
 
 

@@ -1,4 +1,4 @@
 {
-    "module": "spotify_intelligence.silver_layer.PrepareData.PrepareData",
+    "module": "spotify_intelligence.silver_layer.generics.PrepareData.PrepareData",
     "tables": ["Spotify.artist", "Spotify.album", "Spotify.track"]
 }

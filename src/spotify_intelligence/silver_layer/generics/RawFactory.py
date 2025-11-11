@@ -1,4 +1,4 @@
-from spotify_intelligence.silver_layer.RawSource import RawSource
+from spotify_intelligence.silver_layer.generics.RawSource import RawSource
 import importlib
 
 
@@ -6,7 +6,7 @@ class RawFactory:
 
     def get_source(self, source_name: str) -> RawSource:
         raw_source_module = importlib.import_module(
-            f"spotify_intelligence.silver_layer.{source_name}"
+            f"spotify_intelligence.silver_layer.business.{source_name}"
         )
         raw_source_class = getattr(raw_source_module, source_name)
         for cls in RawSource.__subclasses__():
