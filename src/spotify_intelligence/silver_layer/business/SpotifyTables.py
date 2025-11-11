@@ -31,6 +31,27 @@ class SpotifyTables(SilverRawTable):
         return df
 
     def apply_rules(self, df):
+        if self.table_name == "artist":
+            return df.with_columns(
+                pl.col("external_urls").struct.field("spotify").alias("external_urls"),
+                pl.col("images")
+                .map_elements(lambda l: [x["url"] for x in l])
+                .alias("images"),
+            )
+        if self.table_name == "tracks":
+            return df.with_columns(
+                pl.col("album").struct.field("album_type").alias("album_type"),
+                pl.col("artists")
+                .map_elements(lambda l: [x["id"] for x in l])
+                .alias("artists"),
+            )
+        if self.table_name == "albums":
+            return df.with_columns(
+                pl.col("external_urls").struct.field("spotify").alias("external_urls"),
+                pl.col("artists")
+                .map_elements(lambda l: [x["id"] for x in l])
+                .alias("artists"),
+            )
         return df
 
     def save_silver(self, df):
@@ -38,7 +59,7 @@ class SpotifyTables(SilverRawTable):
         if self.table_format == "PARQUET":
             df.write_parquet(self.write_path, mkdir=True)
         elif self.table_format == "DELTA":
-            df.write_delta(self.write_path, mode="overwrite")
+            df.write_delta(self.write_path, mode="overwrite", overwrite_schema=True)
         else:
             raise ValueError(f"Unsupported format: {self.table_format}")
         self.logger.info(
