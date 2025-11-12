@@ -1,24 +1,50 @@
 from spotify_intelligence.silver_layer.generics.SilverRawTable import SilverRawTable
+from pathlib import Path
 import polars as pl
+import re
 
 
 class SpotifyTables(SilverRawTable):
     def __init__(
         self,
-        read_path: str,
-        write_path: str,
         source_name: str,
         table_name: str,
-        table_format: str = "DELTA",
+        table_format: str,
         partitioning: list[str] = [],
     ):
         super().__init__(
-            read_path, write_path, source_name, table_name, table_format, partitioning
+            source_name=source_name,
+            table_name=table_name,
+            table_format=table_format,
+            partitioning=partitioning,
         )
 
     def read_raw(self):
         self.logger.info(f"Reading raw data from {self.read_path}")
-        if self.table_format == "PARQUET":
+        if self.table_format == "JSON":
+
+            def extract_partitions(path: str):
+                return dict(re.findall(r"(\w+)=([\w-]+)", path))
+
+            root = Path(self.read_path)
+            partition_pattern = re.compile(
+                r"(?:^|/)year=\d{4}(?:/month=\d{2})?(?:/day=\d{2})?"
+            )
+            # 1. Find only JSON files under valid partition paths
+            paths = [
+                str(p) for p in root.rglob("*.json") if partition_pattern.search(str(p))
+            ]
+
+            df_parts: list[pl.DataFrame] = []
+            for path in paths:
+                parts = extract_partitions(path)
+                lf = pl.read_json(path)
+                for key, value in parts.items():
+                    lf = lf.with_columns(pl.lit(value).alias(key))
+                df_parts.append(lf)
+
+            df = pl.concat(df_parts)
+        elif self.table_format == "PARQUET":
             df = pl.read_parquet(self.read_path)
         elif self.table_format == "DELTA":
             df = pl.read_delta(self.read_path)
@@ -56,12 +82,7 @@ class SpotifyTables(SilverRawTable):
 
     def save_silver(self, df):
         self.logger.info(f"Saving prepared data to {self.write_path}")
-        if self.table_format == "PARQUET":
-            df.write_parquet(self.write_path, mkdir=True)
-        elif self.table_format == "DELTA":
-            df.write_delta(self.write_path, mode="overwrite", overwrite_schema=True)
-        else:
-            raise ValueError(f"Unsupported format: {self.table_format}")
+        df.write_parquet(self.write_path, partition_by=self.partitioning)
         self.logger.info(
             f"Saved {df.shape[0]} rows and {df.shape[1]} columns to {self.write_path}"
         )

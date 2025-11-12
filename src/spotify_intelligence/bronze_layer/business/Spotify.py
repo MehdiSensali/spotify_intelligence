@@ -3,6 +3,7 @@ import spotify_intelligence.Utils as Utils
 from spotipy import Spotify as SpotipyClient, SpotifyException
 import os
 import polars as pl
+from datetime import datetime
 
 
 class Spotify(RawData):
@@ -80,6 +81,14 @@ class Spotify(RawData):
 
     def save_data(self, df: pl.DataFrame, table: str):
         table_path = os.path.join(self.raw_path, table, "raw")
-        os.makedirs(table_path, exist_ok=True)
-        file_path = os.path.join(table_path, f"{table}.DELTA")
-        df.write_delta(file_path, mode="append")
+        now: datetime = datetime.now()
+        partitioning = [
+            f"year={now.year}",
+            f"month={now.year}-{now.month:02d}",
+            f"day={now.year}-{now.month:02d}-{now.day:02d}",
+            f"hour={now.year}-{now.month:02d}-{now.day:02d}-{now.hour:02d}",
+        ]
+        folder_path = os.path.join(table_path, f"{table}.JSON", "/".join(partitioning))
+        os.makedirs(folder_path, exist_ok=True)
+        file_path = os.path.join(folder_path, f"{table}.json")
+        df.write_json(file_path)

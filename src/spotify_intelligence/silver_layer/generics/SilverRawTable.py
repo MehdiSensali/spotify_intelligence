@@ -4,19 +4,20 @@ import spotify_intelligence.Utils as Utils
 
 
 class SilverRawTable(abc.ABC):
+
     def __init__(
         self,
-        read_path: str,
-        write_path: str,
         source_name: str,
         table_name: str,
-        table_format: str = "DELTA",
+        read_path: str = None,
+        write_path: str = None,
+        table_format: str = "PARQUET",
         partitioning: list[str] = [],
     ):
-        self.read_path = read_path
-        self.write_path = write_path
         self.source_name = source_name
         self.table_name = table_name
+        self.read_path = read_path
+        self.write_path = write_path
         self.table_format = table_format
         self.partitioning = partitioning
         self.logger = Utils.DataLogger().setup_logger(

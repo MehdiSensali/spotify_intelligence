@@ -51,3 +51,6 @@ explorations/
 # Local development
 *.log
 .DS_Store
+
+# UML diagrams
+*.uxf
