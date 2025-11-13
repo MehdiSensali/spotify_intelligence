@@ -21,6 +21,7 @@ class SpotifyTables(SilverRawTable):
 
     def read_raw(self):
         self.logger.info(f"Reading raw data from {self.read_path}")
+        processed_paths = self.tracker.get_processed_paths()
         if self.table_format == "JSON":
 
             def extract_partitions(path: str):
@@ -32,7 +33,10 @@ class SpotifyTables(SilverRawTable):
             )
             # 1. Find only JSON files under valid partition paths
             paths = [
-                str(p) for p in root.rglob("*.json") if partition_pattern.search(str(p))
+                str(p)
+                for p in root.rglob("*.json")
+                if (partition_pattern.search(str(p)))
+                and (str(p) not in processed_paths)
             ]
 
             df_parts: list[pl.DataFrame] = []
@@ -44,6 +48,7 @@ class SpotifyTables(SilverRawTable):
                 df_parts.append(lf)
 
             df = pl.concat(df_parts)
+            self.tracker.save_processed_paths(partitions=paths)
         elif self.table_format == "PARQUET":
             df = pl.read_parquet(self.read_path)
         elif self.table_format == "DELTA":

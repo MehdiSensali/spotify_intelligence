@@ -1,9 +1,12 @@
 import abc
 import polars as pl
 import spotify_intelligence.Utils as Utils
+from spotify_intelligence.silver_layer.generics.TableTracker import TableTracker
+from typing import Optional
 
 
 class SilverRawTable(abc.ABC):
+    tracker: Optional[TableTracker] = None
 
     def __init__(
         self,

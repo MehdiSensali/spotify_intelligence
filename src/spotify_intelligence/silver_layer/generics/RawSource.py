@@ -1,6 +1,7 @@
 import abc
 import os
 from spotify_intelligence.silver_layer.generics.SilverRawTable import SilverRawTable
+from spotify_intelligence.silver_layer.generics.TableTracker import TableTracker
 
 
 class RawSource(abc.ABC):
@@ -29,6 +30,7 @@ class RawSource(abc.ABC):
                     f"{raw_table.table_name}.PARQUET",
                 )
             )
+            raw_table.tracker = TableTracker(raw_table.read_path)
 
     def get_table(self, table_name: str) -> SilverRawTable:
         if table_name in self.RawTables:
